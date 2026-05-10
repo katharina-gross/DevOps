@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-api-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spring-api
+  template:
+    metadata:
+      labels:
+        app: spring-api
+    spec:
+      containers:
+        - name: spring-api
+          image: spring-secure-api
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
