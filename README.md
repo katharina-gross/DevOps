@@ -80,3 +80,106 @@ DoD не фиксирован. Даже если какая-то часть за
 Продвинутая часть:
 - Умение подготавливать безопасные развертывания в Kubernetes.
 - Навыки формирования автоматизированых проверок кода на уязвимости.
+
+## Результат
+
+https://gitlab.com/katharina-gross/DevOps/-/pipelines
+<img width="1379" height="433" alt="image" src="https://github.com/user-attachments/assets/b34e45de-352f-4693-a58a-94d42225c44f" />
+
+---
+
+# Использованные технологии
+
+## Docker
+
+Docker использовался для контейнеризации Spring Boot приложения.
+
+В Dockerfile реализована:
+- многоступенчатая сборка;
+- минималистичный runtime image;
+- запуск контейнера не от root пользователя;
+- копирование только необходимых файлов.
+
+---
+
+## Kubernetes
+
+Для развертывания приложения были созданы Kubernetes manifests:
+- Deployment
+- Service
+- NetworkPolicy
+- Secret example
+
+Deployment использует:
+- 2 replicas;
+- resource limits;
+- readiness и liveness probes;
+- security context.
+
+---
+
+## Kind
+
+Kind (Kubernetes in Docker) использовался как локальный Kubernetes cluster.
+
+С его помощью проверялись:
+- deployment приложения;
+- восстановление pod;
+- работа service;
+- доступ к API.
+
+---
+
+## Maven
+
+Maven используется для:
+- сборки Spring Boot приложения;
+- управления зависимостями;
+- запуска static analysis.
+
+---
+
+## Checkstyle
+
+Checkstyle используется для статического анализа кода.
+
+Инструмент помогает находить:
+- проблемы форматирования;
+- style issues;
+- потенциальные проблемы поддержки кода.
+
+---
+
+## Trivy
+
+Trivy используется для поиска уязвимостей в Docker image.
+
+Во время сканирования создаются:
+- text report;
+- JSON report.
+
+---
+
+## GitLab CI/CD
+
+GitLab CI/CD используется для автоматизации:
+- Maven build;
+- static analysis;
+- Docker image build;
+- vulnerability scanning.
+
+Pipeline состоит из 4 stages:
+- build
+- check
+- docker
+- scan
+
+---
+
+# Запуск локальной проверки
+
+Для запуска всех проверок используется скрипт:
+
+```bash
+chmod +x scripts/security-check.sh
+./scripts/security-check.sh
