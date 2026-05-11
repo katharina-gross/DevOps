@@ -43,3 +43,7 @@ monitoring.yaml
 .env.*
 !.env.example
 *.swp
+
+### Report
+reports/
+*.tar

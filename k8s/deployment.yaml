@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: spring-api
-          image: spring-secure-api
+          image: secure-api
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
