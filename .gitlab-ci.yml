@@ -1,0 +1,65 @@
+stages:
+  - build
+  - check
+  - docker
+  - scan
+
+variables:
+  IMAGE_NAME: "secure-api"
+  IMAGE_TAR: "secure-api.tar"
+
+maven-build:
+  stage: build
+  image: maven:3.9-eclipse-temurin-17
+
+  script:
+    - mvn clean package -DskipTests
+  
+  artifacts:
+    paths:
+      - target/*.jar
+
+static-analysis:
+  stage: check
+  image: maven:3.9-eclipse-temurin-17
+
+  script:
+    - mvn checkstyle:checkstyle || true
+
+  allow_failure: true
+
+docker-build: 
+  stage: docker
+  image: docker:27
+
+  services:
+    - docker:27-dind
+
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+
+  script:
+    - docker build -t $IMAGE_NAME .
+    - docker save $IMAGE_NAME -o $IMAGE_TAR
+
+  artifacts:
+    paths:
+      - $IMAGE_TAR
+
+security-scan:
+  stage: scan
+
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+
+  script:
+    - trivy image --input $IMAGE_TAR --format table --output trivy-report.txt || true
+    - trivy image --input $IMAGE_TAR --format json --output trivy-report.json || true
+
+  artifacts:
+    paths:
+      - trivy-report.txt
+      - trivy-report.json
+
+  allow_failure: true
